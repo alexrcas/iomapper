@@ -144,3 +144,193 @@ Es importante utilizar *Draw.io* siguiendo las siguientes consideraciones para q
 ![](docs/linea.png)
 
 5. Siempre que se respeten estas normas básicas no hay limitación en cuanto al resto de uso de estilos como colores, tamaños, temas, etc...
+
+
+### Ejemplo
+
+Como ejemplo final, se evoluciona un poco más el diagrama del tutorial (puede encontrarse el fichero *drawio* en el directorio *example*). A continuación se muestra el diagrama y el resultado final:
+
+![](docs/ejemplo.png)
+
+Cabe recordar que la salida consistiría en múltiples ficheros de clase, pero aquí se une en un solo bloque de código para simplificar su lectura:
+
+```
+package iomapper;
+
+import javax.persistence.*;
+
+@Entity
+public class Articulo {
+    
+    private Long id;
+        
+    private Pedido pedido;
+    
+    protected Articulo() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_PEDIDO")
+    public Pedido getPedido() { return this.pedido; }
+
+    public void setPedido(Pedido pedido) { this.pedido = pedido; }
+}
+
+
+
+@Entity
+public class Direccion {
+    
+    private Long id;
+        
+    private Usuario usuario;
+    
+    protected Direccion() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_USUARIO")
+    public Usuario getUsuario() { return this.usuario; }
+
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+}
+
+
+
+@Entity
+public class Efectivo extends Pago {
+
+    protected Efectivo() {}
+}
+
+
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Envio {
+    
+    private Long id;
+        
+    private Pago pago;
+    
+    protected Envio() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_PAGO")
+    public Pago getPago() { return this.pago; }
+
+    public void setPago(Pago pago) { this.pago = pago; }
+}
+
+
+@Entity
+public class Ordinario extends Envio {
+        
+    protected Ordinario() {}
+}
+
+
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Pago {
+    
+    private Long id;
+        
+    private Pedido pedido;
+    
+    protected Pago() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_PEDIDO")
+    public Pedido getPedido() { return this.pedido; }
+
+    public void setPedido(Pedido pedido) { this.pedido = pedido; }
+}
+
+
+
+@Entity
+public class Pedido {
+    
+    private Long id;
+        
+    private Usuario usuario;
+    
+    protected Pedido() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_USUARIO")
+    public Usuario getUsuario() { return this.usuario; }
+
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+}
+
+
+
+@Entity
+public class TarjetaCliente extends Pago {
+        
+    private Usuario usuario;
+    
+    protected TarjetaCliente() {}
+        
+    @ManyToOne()
+    @JoinColumn(name = "ID_USUARIO")
+    public Usuario getUsuario() { return this.usuario; }
+
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+}
+
+
+
+@Entity
+public class Urgente extends Envio {
+        
+    protected Urgente() {} 
+}
+
+
+
+@Entity
+public class Usuario {
+    
+    private Long id;
+        
+    protected Usuario() {}
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+}
+```
