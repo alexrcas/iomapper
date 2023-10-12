@@ -1,4 +1,4 @@
-package ioMapper;
+package iomapper;
 
 import javax.persistence.*;
 

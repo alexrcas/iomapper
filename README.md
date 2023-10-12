@@ -118,7 +118,7 @@ public class Tarjeta extends Pago {
 #### Cabeceras
 Las clases generadas contendrán la cabecera:
 ```
-package ioMapper;
+package iomapper;
 
 import javax.persistence.*;
 ```
