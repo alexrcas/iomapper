@@ -58,6 +58,9 @@ public class Pedido {
         
     private Usuario usuario;
     
+    private Articulo articulo;
+    
+
     protected Pedido() {}
     
     @Id
@@ -71,6 +74,13 @@ public class Pedido {
     public Usuario getUsuario() { return this.usuario; }
 
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    
+    @ManyToOne()
+    @JoinColumn(name = "ID_ARTICULO")
+    public Articulo getArticulo() { return this.articulo; }
+
+    public void setArticulo(Articulo articulo) { this.articulo = articulo; }
+    
 }
 ```
 
