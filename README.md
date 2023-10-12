@@ -12,9 +12,9 @@ Versión de Python: 3.11.6
 pip install -r requeriments.txt
 ```
 
-2. Ejecutar
+2. Ejecutar el fichero de ejemplo
 ```
-python iomapper.py nombrefichero.drawio
+python iomapper.py example/ejemplo.drawio
 ```
 
 Se generará un directorio *output* con las clases Java.
