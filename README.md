@@ -23,8 +23,6 @@ Se generará un directorio *output* con las clases Java.
 
 Para el siguiente ejemplo se utilizará un pequeño diagrama que podría representar parte del modelo de datos de un negocio de venta.
 
-* Fe de erratas: El diagrama contiene errores desde el punto de vista del diseño, pero no es más que un ejemplo para mostrar el uso de la herramienta.
-
 ![](docs/diagrama.png)
 
 Dado este diagrama, veamos las clases que genera IOMapper:
