@@ -1,0 +1,35 @@
+package ioMapper;
+
+import javax.persistence.*;
+
+@Entity
+#if($clazz.isBase)@Inheritance(strategy = InheritanceType.JOINED)
+#end
+public#if($clazz.isAbstract) abstract#end class $clazz.name#if($clazz.extends) extends $clazz.extends#end {
+    #if(!$clazz.extends)
+
+    private Long id;
+    #end
+    #foreach($attribute in $clazz.attributes)
+    private $attribute.clazz $attribute.name;
+    #end
+
+
+    protected ${clazz.name}() {}
+    
+    #if(!$clazz.extends)
+@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long getId() { return this.id; }
+
+    public void setId(Long id) { this.id = id; }
+    #end
+    #foreach($attribute in $clazz.attributes)
+    @ManyToOne()
+    @JoinColumn(name = "ID_$attribute.toUpperCase")
+    public $attribute.clazz get${attribute.clazz}() { return this.$attribute.name; }
+
+    public void set${attribute.clazz}($attribute.clazz $attribute.name) { this.$attribute.name = $attribute.name; }
+    #end
+
+}
