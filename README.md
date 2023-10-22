@@ -157,6 +157,11 @@ Es importante utilizar *Draw.io* siguiendo las siguientes consideraciones para q
 5. Siempre que se respeten estas normas básicas no hay limitación en cuanto al resto de uso de estilos como colores, tamaños, temas, etc...
 
 
+#### Nota importante
+
+En ocasiones *Draw.io* exporta por defecto el diagrama en formato comprimido. En dicho caso *IOMapper* no funcionará y no creará las clases de Java. Esto también puede comprobarse fácilmente abriendo el fichero del diagrama y observando que en lugar de un *XML* válido contiene una gigante cadena de caracteres. Para asegurarse de exportar el diagrama como un *XML* válido que *IOMapper* pueda entender se puede hacer explícitamente haciendo click en *Archivo* -> *Exportar como* -> *XML...* y asegurarse de desmarcar la casilla *Comprimido*.
+
+
 ### Ejemplo
 
 Como ejemplo final, se evoluciona un poco más el diagrama del tutorial (puede encontrarse el fichero *drawio* en el directorio *example*). A continuación se muestra el diagrama y el resultado final:
