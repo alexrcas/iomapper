@@ -357,3 +357,38 @@ public class Usuario {
     public void setId(Long id) { this.id = id; }
 }
 ```
+
+#### Generación de los DAO
+
+IOMapper también generará el código de los DAOs, aunque únicamente sus interfaces. Esto es así para no forzar al programador a una implementación concreta de todo el abanico de posibles opciones. Al igual que ocurre con las entidades, IOMapper generará un fichero por cada DAO, siguiendo la nomenclatura `NombreEntidadDAO.java`. 
+
+Todos los DAOs contarán como mínimo con los métodos *save*, *get* y *list*
+
+```
+public interface ArticuloDao {
+
+    void saveOrUpdate(Articulo articulo);
+
+    Articulo get(Long id);
+
+    List<Articulo> list();
+            
+}
+```
+Si la entidad apunta a otras entidades, como es el caso, por ejemplo, de *Pedido*, IOMapper generará en el DAO también un método *find* para cada uno de los atributos de la clase.
+
+```
+public interface PedidoDao {
+
+    void saveOrUpdate(Pedido pedido);
+
+    Pedido get(Long id);
+
+    List<Pedido> list();
+    
+    Optional<Pedido> findByUsuario(Usuario usuario);
+    
+    Optional<Pedido> findByArticulo(Articulo articulo);
+            
+}
+```
