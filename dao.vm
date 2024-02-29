@@ -1,0 +1,18 @@
+package iomapper;
+
+import java.util.List;
+import java.util.Optional;
+
+
+public interface ${clazz.name}Dao {
+
+    void saveOrUpdate(${clazz.name} ${clazz.lowercaseName});
+
+    ${clazz.name} get(Long id);
+
+    List<${clazz.name}> list();
+    #foreach($attribute in $clazz.attributes)
+    Optional<${clazz.name}> findBy${attribute.clazz}(${attribute.clazz} ${attribute.name});
+    #end
+
+}

@@ -98,9 +98,27 @@ class IOMapper:
             output = template.merge(dto)
             self.exportar_fichero(dto, output)
 
+        
+        with open('dao.vm', 'r') as dao_template_file:
+            dao_template_content = dao_template_file.read()
+
+        daoTemplate = airspeed.Template(dao_template_content)
+
+        if not os.path.exists(self.OUTPUT_DIR):
+            os.makedirs(self.OUTPUT_DIR)
+
+        for dto in dtos:
+            output = daoTemplate.merge(dto)
+            self.exportar_fichero_dao(dto, output)
+
 
     def exportar_fichero(self, dto, output):
         filename = dto['clazz']['name'] + '.java'
+        with open(self.OUTPUT_DIR + '/' + filename, 'w') as java_file:
+            java_file.write(output)
+
+    def exportar_fichero_dao(self, dto, output):
+        filename = dto['clazz']['name'] + 'Dao.java'
         with open(self.OUTPUT_DIR + '/' + filename, 'w') as java_file:
             java_file.write(output)
 
@@ -140,6 +158,7 @@ class IOMapper:
             dtos.append({
                 'clazz': {
                     'name': entity['clazz'],
+                    'lowercaseName': entity['clazz'][:1].lower() + entity['clazz'][1:],
                     'extends': self.findExtends(entity),
                     'isAbstract': entity['isAbstract'],
                     'isBase': self.findIsBase(entity),
