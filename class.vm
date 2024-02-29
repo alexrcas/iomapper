@@ -1,32 +1,25 @@
 package iomapper;
 
-import javax.persistence.*;
-
+@AuditEntity("${clazz.name}")
 @Entity
+@Table(name = "${clazz.tableName}")
 #if($clazz.isBase)@Inheritance(strategy = InheritanceType.JOINED)
 #end
-public#if($clazz.isAbstract) abstract#end class $clazz.name#if($clazz.extends) extends $clazz.extends#end {
-    #if(!$clazz.extends)
+#if($clazz.extends)@PrimaryKeyJoinColumn(name = "id${clazz.extends}")
+#end
+public#if($clazz.isAbstract) abstract#end class $clazz.name extends #if($clazz.extends)$clazz.extends#elseVersionedAuditEntity#end {
 
-    private Long id;
-    #end
     #foreach($attribute in $clazz.attributes)
     private $attribute.clazz $attribute.name;
     #end
 
-
     protected ${clazz.name}() {}
     
-    #if(!$clazz.extends)
-@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-    #end
     #foreach($attribute in $clazz.attributes)
-    @ManyToOne()
-    @JoinColumn(name = "ID_$attribute.toUpperCase")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({})
+    @JoinColumn(name = "id${attribute.clazz}")
+    @AuditProperty(value = "${attribute.name}", auditStringFactoryClass = AuditEntityStringFactory.class)
     public $attribute.clazz get${attribute.clazz}() { return this.$attribute.name; }
 
     public void set${attribute.clazz}($attribute.clazz $attribute.name) { this.$attribute.name = $attribute.name; }

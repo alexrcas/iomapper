@@ -1,9 +1,5 @@
 package iomapper;
 
-import java.util.List;
-import java.util.Optional;
-
-
 public interface ${clazz.name}Dao {
 
     void saveOrUpdate(${clazz.name} ${clazz.lowercaseName});

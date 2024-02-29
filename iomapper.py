@@ -1,4 +1,5 @@
 import airspeed
+import inflection
 from xml.etree import ElementTree as ET
 import sys
 import os
@@ -96,6 +97,7 @@ class IOMapper:
             
         for dto in dtos:
             output = template.merge(dto)
+            print(dto)
             self.exportar_fichero(dto, output)
 
         
@@ -138,8 +140,8 @@ class IOMapper:
                 if relation['source']['id'] == entity['id']:
                     attributes.append({
                         'clazz': relation['target']['clazz'],
-                        'name': relation['target']['clazz'].lower(),
-                        'toUpperCase': relation['target']['clazz'].upper()
+                        'name': relation['target']['clazz'][:1].lower() + relation['target']['clazz'][1:],
+                        'toUpperCase': relation['target']['clazz'].upper(),
                     })
         return attributes
 
@@ -158,6 +160,7 @@ class IOMapper:
             dtos.append({
                 'clazz': {
                     'name': entity['clazz'],
+                    'tableName': inflection.underscore(entity['clazz']).upper(),
                     'lowercaseName': entity['clazz'][:1].lower() + entity['clazz'][1:],
                     'extends': self.findExtends(entity),
                     'isAbstract': entity['isAbstract'],
