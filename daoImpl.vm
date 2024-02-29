@@ -1,0 +1,40 @@
+package iomapper;
+
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+import net.avantic.sidopu.domain.dao.hibernate.AbstractDaoSupport;
+
+@Repository
+public interface ${clazz.name}DaoImpl extends AbstractDaoSupport implements ${clazz.name}Dao {
+
+    @Override
+    void saveOrUpdate(${clazz.name} ${clazz.lowercaseName}) {
+        getSession.saveOrUpdate(${clazz.lowercaseName});
+    }
+
+    @Override
+    ${clazz.name} get(Long id) {
+        return (${clazz.name}) getSession().get(${clazz.name}.class, id);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    List<${clazz.name}> list() {
+        return getSession().createCriteria(${clazz.name}.class)
+                .addOrder(Order.desc("id"))
+                .list();
+    }
+
+    #foreach($attribute in $clazz.attributes)
+    @Override
+    @SuppressWarnings("unchecked")
+    List<${clazz.name}> listBy${attribute.clazz}(${attribute.clazz} ${attribute.name}) {
+        return getSession().createCriteria(${clazz.name}.class)
+                .add(Restrictions.eq("${attribute.name}", ${attribute.name}))
+                .addOrder(Order.desc("id"))
+                .list();
+    }
+    #end
+
+}

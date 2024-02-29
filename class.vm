@@ -1,5 +1,13 @@
 package iomapper;
 
+import net.avantic.core.audit.annotations.AuditEntity;
+import net.avantic.core.audit.annotations.AuditProperty;
+import net.avantic.core.audit.utils.AuditEntityStringFactory;
+import net.avantic.sidopu.domain.model.base.VersionedAuditEntity;
+import org.hibernate.annotations.Cascade;
+
+import javax.persistence.*;
+
 @AuditEntity("${clazz.name}")
 @Entity
 @Table(name = "${clazz.tableName}")

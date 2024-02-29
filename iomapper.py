@@ -106,12 +106,25 @@ class IOMapper:
 
         daoTemplate = airspeed.Template(dao_template_content)
 
-        if not os.path.exists(self.OUTPUT_DIR):
-            os.makedirs(self.OUTPUT_DIR)
+        if not os.path.exists(self.OUTPUT_DIR + '/dao'):
+            os.makedirs(self.OUTPUT_DIR + '/dao')
 
         for dto in dtos:
             output = daoTemplate.merge(dto)
             self.exportar_fichero_dao(dto, output)
+
+
+        with open('daoImpl.vm', 'r') as dao_impl_template_file:
+            dao_impl_template_content = dao_impl_template_file.read()
+
+        daoImplTemplate = airspeed.Template(dao_impl_template_content)
+
+        if not os.path.exists(self.OUTPUT_DIR + '/dao/impl'):
+            os.makedirs(self.OUTPUT_DIR + '/dao/impl')
+
+        for dto in dtos:
+            output = daoImplTemplate.merge(dto)
+            self.exportar_fichero_dao_impl(dto, output)
 
 
     def exportar_fichero(self, dto, output):
@@ -121,7 +134,12 @@ class IOMapper:
 
     def exportar_fichero_dao(self, dto, output):
         filename = dto['clazz']['name'] + 'Dao.java'
-        with open(self.OUTPUT_DIR + '/' + filename, 'w') as java_file:
+        with open(self.OUTPUT_DIR + '/dao/' + filename, 'w') as java_file:
+            java_file.write(output)
+
+    def exportar_fichero_dao_impl(self, dto, output):
+        filename = dto['clazz']['name'] + 'DaoImpl.java'
+        with open(self.OUTPUT_DIR + '/dao/impl/' + filename, 'w') as java_file:
             java_file.write(output)
 
 
