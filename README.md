@@ -25,118 +25,19 @@ Para el siguiente ejemplo se utilizará un pequeño diagrama que podría represe
 
 ![](docs/diagrama.png)
 
-Dado este diagrama, veamos las clases que genera IOMapper:
-
-**Nota**: Este diagrama es un ejemplo simplificado tomado de la versión estándar de IOMapper y su única función es enseñar cómo utilizar draw.io. La versión Avantic de IOMapper generará además código y anotaciones usados en Avantic. Al final de esta documentación se proporciona un ejemplo real.
-
+Dado este diagrama, hay varios elementos clave que IOMapper identificará y deben usarse correctamente para obtener el resultado deseado:
 
 #### UML Entity
 Un objeto de tipo *UML Entity* como *Usuario* se traduce en una entidad de Java:
 
-```
-@Entity
-public class Usuario {
-    
-    private Long id;
-        
-    protected Usuario() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-}
-```
-
-
 #### Flecha continua
-Una flecha continua que apunta de una entidad a otra simboliza una relación muchos a uno, donde el hijo apunta a su padre. Por ejemplo, la entidad *Pedido* quedaría de la siguiente manera:
-
-```
-@Entity
-public class Pedido {
-    
-    private Long id;
-        
-    private Usuario usuario;
-    
-    private Articulo articulo;
-    
-
-    protected Pedido() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_USUARIO")
-    public Usuario getUsuario() { return this.usuario; }
-
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-    
-    @ManyToOne()
-    @JoinColumn(name = "ID_ARTICULO")
-    public Articulo getArticulo() { return this.articulo; }
-
-    public void setArticulo(Articulo articulo) { this.articulo = articulo; }
-    
-}
-```
+Una flecha continua que apunta de una entidad a otra simboliza una relación muchos a uno, donde el hijo apunta a su padre.
 
 #### UML Entity con línea discontinua
-Un objeto *UML Entity* con línea discontinua es traducido como una entidad abstracta. También y sin estar relacionado con lo primero, una entidad que sea base de otras será anotada con *@Inheritance*. Así, la entidad *Pago* produciría:
-
-```
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Pago {
-    
-    private Long id;
-        
-    private Pedido pedido;
-
-    protected Pago() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_PEDIDO")
-    public Pedido getPedido() { return this.pedido; }
-
-    public void setPedido(Pedido pedido) { this.pedido = pedido; }
-    
-}
-```
+Un objeto *UML Entity* con línea discontinua es traducido como una entidad abstracta.
 
 #### Flecha discontinua
-Una flecha discontinua de una entidad a otra simboliza una relación de herencia, donde la clase derivada apunta a la clase base. Por ejemplo, la entidad *Tarjeta* produciría el siguiente código:
-
-```
-@Entity
-public class Tarjeta extends Pago {
-
-    protected Tarjeta() {}    
-
-}
-```
-
-#### Cabeceras
-Las clases generadas contendrán la cabecera:
-```
-package iomapper;
-
-import javax.persistence.*;
-```
-
-De esta forma las anotaciones funcionarán corectamente y el nombre del paquete será fácil de localizar y reemplazar en todas las clases utilizando la herramienta de reemplazo de cualquier editor.
+Una flecha discontinua de una entidad a otra simboliza una relación de herencia, donde la clase derivada apunta a la clase base.
 
 ### Uso de Draw.io
 
@@ -171,7 +72,11 @@ A continuación se muestra un diagrama real utilizado por Avantic y el código g
 ![](docs/ejemplo.png)
 
 IOMapper generará la siguiente estructura
-[estructura]
+```
+output/
+├─ dao/
+│  ├─ impl
+```
 
 En cada directorio se encontrarán los ficheros de código correspondientes. A continuación se muestran algunos ejemplos:
 
