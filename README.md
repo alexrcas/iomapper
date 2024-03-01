@@ -95,7 +95,7 @@ public class Tasa extends VersionedAuditEntity {
 }
 ```
 
-Ejemplo de anotaciones de auditoría en los atributos
+Ejemplo de anotaciones de auditoría en los atributos. En este caso, IOMapper añade la anotación `@Inheritance` no porque la entidad sea abstracta sino porque detecta que hay otras entidades heredando de ella. Una entidad no abstracta también podría ser anotada.
 
 ```
 @AuditEntity("Fase")
