@@ -1,4 +1,4 @@
-# IOMapper
+# IOMapper (versión Avantic)
 
 IOMapper es una pequeña herramienta para traducir los diagramas de entidades hechos en *draw.io* a código Java.
 
@@ -26,6 +26,8 @@ Para el siguiente ejemplo se utilizará un pequeño diagrama que podría represe
 ![](docs/diagrama.png)
 
 Dado este diagrama, veamos las clases que genera IOMapper:
+
+**Nota**: Este diagrama es un ejemplo simplificado tomado de la versión estándar de IOMapper y su única función es enseñar cómo utilizar draw.io. La versión Avantic de IOMapper generará además código y anotaciones usados en Avantic. Al final de esta documentación se proporciona un ejemplo real.
 
 
 #### UML Entity
@@ -162,233 +164,137 @@ Es importante utilizar *Draw.io* siguiendo las siguientes consideraciones para q
 En ocasiones *Draw.io* exporta por defecto el diagrama en formato comprimido. En dicho caso *IOMapper* no funcionará y no creará las clases de Java. Esto también puede comprobarse fácilmente abriendo el fichero del diagrama y observando que en lugar de un *XML* válido contiene una gigante cadena de caracteres. Para asegurarse de exportar el diagrama como un *XML* válido que *IOMapper* pueda entender se puede hacer explícitamente haciendo click en *Archivo* -> *Exportar como* -> *XML...* y asegurarse de desmarcar la casilla *Comprimido*.
 
 
-### Ejemplo
+### Ejemplo real
 
-Como ejemplo final, se evoluciona un poco más el diagrama del tutorial (puede encontrarse el fichero *drawio* en el directorio *example*). A continuación se muestra el diagrama y el resultado final:
+A continuación se muestra un diagrama real utilizado por Avantic y el código generado por esta versión de IOMapper
 
 ![](docs/ejemplo.png)
 
-Cabe recordar que la salida consistiría en múltiples ficheros de clase, pero aquí se une en un solo bloque de código para simplificar su lectura:
+IOMapper generará la siguiente estructura
+[estructura]
+
+En cada directorio se encontrarán los ficheros de código correspondientes. A continuación se muestran algunos ejemplos:
+
+#### Entidades
+
+Una clase estándar generada por IOMapper. Nótese que hereda de `VersionedAuditEntity`
 
 ```
-package iomapper;
-
-import javax.persistence.*;
-
+@AuditEntity("Tasa")
 @Entity
-public class Articulo {
-    
-    private Long id;
-        
-    private Pedido pedido;
-    
-    protected Articulo() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
+@Table(name = "TASA")
+public class Tasa extends VersionedAuditEntity {
 
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_PEDIDO")
-    public Pedido getPedido() { return this.pedido; }
-
-    public void setPedido(Pedido pedido) { this.pedido = pedido; }
+    protected Tasa() {}
+      
 }
+```
 
+Ejemplo de anotaciones de auditoría en los atributos
 
-
+```
+@AuditEntity("Fase")
 @Entity
-public class Direccion {
-    
-    private Long id;
-        
-    private Usuario usuario;
-    
-    protected Direccion() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_USUARIO")
-    public Usuario getUsuario() { return this.usuario; }
-
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-}
-
-
-
-@Entity
-public class Efectivo extends Pago {
-
-    protected Efectivo() {}
-}
-
-
-
-@Entity
+@Table(name = "FASE")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Envio {
-    
-    private Long id;
-        
-    private Pago pago;
-    
-    protected Envio() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
+public abstract class Fase extends VersionedAuditEntity {
 
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_PAGO")
-    public Pago getPago() { return this.pago; }
+    private Tasa tasa;
+    
+    protected Fase() {}
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Cascade({})
+    @JoinColumn(name = "idTasa", nullable = false)
+    @AuditProperty(value = "tasa", auditStringFactoryClass = AuditEntityStringFactory.class)
+    public Tasa getTasa() { return this.tasa; }
 
-    public void setPago(Pago pago) { this.pago = pago; }
+    public void setTasa(Tasa tasa) { this.tasa = tasa; }
+    
 }
+```
 
+Al extender de otra clase, ya no se extiende de `VersionedAuditEntity`. También se hace uso de la anotación `@PrimaryKeyJoinColumn` 
 
+```
+@AuditEntity("FaseEjecutiva")
 @Entity
-public class Ordinario extends Envio {
-        
-    protected Ordinario() {}
-}
-
-
-
-@Entity
-@Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Pago {
+@Table(name = "FASE_EJECUTIVA")
+@PrimaryKeyJoinColumn(name = "idFase")
+public class FaseEjecutiva extends Fase {
+ 
+    protected FaseEjecutiva() {}
     
-    private Long id;
-        
-    private Pedido pedido;
-    
-    protected Pago() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_PEDIDO")
-    public Pedido getPedido() { return this.pedido; }
-
-    public void setPedido(Pedido pedido) { this.pedido = pedido; }
-}
-
-
-
-@Entity
-public class Pedido {
-    
-    private Long id;
-        
-    private Usuario usuario;
-    
-    private Articulo articulo;
-
-    protected Pedido() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_USUARIO")
-    public Usuario getUsuario() { return this.usuario; }
-
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-    
-    @ManyToOne()
-    @JoinColumn(name = "ID_ARTICULO")
-    public Articulo getArticulo() { return this.articulo; }
-
-    public void setArticulo(Articulo articulo) { this.articulo = articulo; }
-}
-
-
-@Entity
-public class TarjetaCliente extends Pago {
-        
-    private Usuario usuario;
-    
-    protected TarjetaCliente() {}
-        
-    @ManyToOne()
-    @JoinColumn(name = "ID_USUARIO")
-    public Usuario getUsuario() { return this.usuario; }
-
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
-}
-
-
-
-@Entity
-public class Urgente extends Envio {
-        
-    protected Urgente() {} 
-}
-
-
-
-@Entity
-public class Usuario {
-    
-    private Long id;
-        
-    protected Usuario() {}
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    public Long getId() { return this.id; }
-
-    public void setId(Long id) { this.id = id; }
 }
 ```
 
 #### Generación de los DAO
 
-IOMapper también generará el código de los DAOs, aunque únicamente sus interfaces. Esto es así para no forzar al programador a una implementación concreta de todo el abanico de posibles opciones. Al igual que ocurre con las entidades, IOMapper generará un fichero por cada DAO, siguiendo la nomenclatura `NombreEntidadDAO.java`. 
+IOMapper también generará el código de los DAOs. Al igual que ocurre con las entidades, se generará un fichero por cada DAO, siguiendo la nomenclatura `NombreEntidadDAO.java`. 
 
 Todos los DAOs contarán como mínimo con los métodos *save*, *get* y *list*
 
 ```
-public interface ArticuloDao {
+public interface ExpedienteRecursoDao {
 
-    void saveOrUpdate(Articulo articulo);
+    void saveOrUpdate(ExpedienteRecurso expedienteRecurso);
 
-    Articulo get(Long id);
+    ExpedienteRecurso get(Long id);
 
-    List<Articulo> list();
-            
+    List<ExpedienteRecurso> list();
+    
 }
 ```
-Si la entidad apunta a otras entidades, como es el caso, por ejemplo, de *Pedido*, IOMapper generará en el DAO también un método *find* para cada uno de los atributos de la clase.
+Si la entidad apunta a otras entidades, como es el caso, por ejemplo, de *Fase*, IOMapper generará en el DAO también un método *list* para cada uno de los atributos de la clase.
 
 ```
-public interface PedidoDao {
+public interface FaseDao {
 
-    void saveOrUpdate(Pedido pedido);
+    void saveOrUpdate(Fase fase);
 
-    Pedido get(Long id);
+    Fase get(Long id);
 
-    List<Pedido> list();
+    List<Fase> list();
     
-    Optional<Pedido> findByUsuario(Usuario usuario);
+    List<Fase> listByTasa(Tasa tasa);
     
-    Optional<Pedido> findByArticulo(Articulo articulo);
-            
+}
+```
+
+#### Implementación de los DAO
+
+IOMapper generará también el código de la implementación de los DAOs
+
+```
+@Repository
+public interface FaseDaoImpl extends AbstractDaoSupport implements FaseDao {
+
+    @Override
+    void saveOrUpdate(Fase fase) {
+        getSession.saveOrUpdate(fase);
+    }
+
+    @Override
+    Fase get(Long id) {
+        return (Fase) getSession().get(Fase.class, id);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    List<Fase> list() {
+        return getSession().createCriteria(Fase.class)
+                .addOrder(Order.desc("id"))
+                .list();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    List<Fase> listByTasa(Tasa tasa) {
+        return getSession().createCriteria(Fase.class)
+                .add(Restrictions.eq("tasa", tasa))
+                .addOrder(Order.desc("id"))
+                .list();
+    }
+    
 }
 ```
