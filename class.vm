@@ -26,7 +26,7 @@ public#if($clazz.isAbstract) abstract#end class $clazz.name extends #if($clazz.e
     #foreach($attribute in $clazz.attributes)
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({})
-    @JoinColumn(name = "id${attribute.clazz}")
+    @JoinColumn(name = "id${attribute.clazz}", nullable = false)
     @AuditProperty(value = "${attribute.name}", auditStringFactoryClass = AuditEntityStringFactory.class)
     public $attribute.clazz get${attribute.clazz}() { return this.$attribute.name; }
 
