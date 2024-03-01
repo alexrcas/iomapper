@@ -28,7 +28,7 @@ Para el siguiente ejemplo se utilizará un pequeño diagrama que podría represe
 Dado este diagrama, hay varios elementos clave que IOMapper identificará y deben usarse correctamente para obtener el resultado deseado:
 
 #### UML Entity
-Un objeto de tipo *UML Entity* como *Usuario* se traduce en una entidad de Java:
+Un objeto de tipo *UML Entity* como se traduce en una entidad de Java:
 
 #### Flecha continua
 Una flecha continua que apunta de una entidad a otra simboliza una relación muchos a uno, donde el hijo apunta a su padre.
