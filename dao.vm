@@ -8,7 +8,7 @@ public interface ${clazz.name}Dao {
 
     List<${clazz.name}> list();
     #foreach($attribute in $clazz.attributes)
-    Optional<${clazz.name}> findBy${attribute.clazz}(${attribute.clazz} ${attribute.name});
+    List<${clazz.name}> listBy${attribute.clazz}(${attribute.clazz} ${attribute.name});
     #end
 
 }
